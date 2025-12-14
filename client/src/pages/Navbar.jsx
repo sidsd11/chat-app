@@ -3,9 +3,10 @@ import { useContext } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { LogIn } from 'lucide-react'
+import toast from 'react-hot-toast'
+
 import { AppContext } from '../context/AppContext'
 import assets from '../assets/assets'
-import toast from 'react-hot-toast'
 
 const Navbar = () => {
     axios.defaults.withCredentials = true

@@ -4,27 +4,28 @@ import userModel from '../models/userModel.js'
 
 export const getAllUsers = async (req, res) => {
     try {
-        const userId = req.user._id
+        const userId = req.user.id
 
-        const filteredUsers = await userModel.find({_id: {$ne: userId}}).select('-password')
+        const filteredUsers = await userModel.find({_id: {$ne: userId}}).select('_id name profilePic bio')
         const unseenMessages = {}
-        const promises = users.map(async (user) => {
+        const promises = filteredUsers.map(async (user) => {
             const messages = await messageModel.find({senderId: user._id, receiverId: userId, seen: false})
             if (messages.length > 0) {
                 unseenMessages[user._id] = messages.length
             }
         })
         await Promise.all(promises)
-        res.json({success: true, message: 'Data fetched successfully', users: filteredUsers, unseenMessages})
+
+        return res.json({success: true, message: 'Data fetched successfully', allUsersList: filteredUsers, unseenMessages})
     }
     catch (error) {
         return res.json({success: false, message: error.message})
     }
 }
 
-export const getMessages = async (req, res) => {
+export const getAllMessages = async (req, res) => {
     try {
-        const userId = req.user._id
+        const userId = req.user.id
         const selectedUserId = req.params.id
 
         const messages = await messageModel.find({
@@ -56,7 +57,7 @@ export const markMessageAsSeen = async (req, res) => {
 
 export const sendMessage = async (req, res) => {
     try {
-        const userId = req.user._id
+        const userId = req.user.id
         const receiverId = req.params.id
         const {text, image} = req.body
 
@@ -66,12 +67,15 @@ export const sendMessage = async (req, res) => {
             imageUrl = uploadedPic.secure_url
         }
 
-        const message = new messageModel({senderId: userId, ReceiverId: receiverId, text, image: imageUrl})
+        const message = new messageModel({senderId: userId, receiverId: receiverId, text, image: imageUrl})
         await message.save()
 
         return res.json({success: true, message: 'Message sent successfully', message})
     }
     catch (error) {
         return res.json({success: false, message: error.message})
+    }
+    finally {
+        console.log(req.body)
     }
 }
