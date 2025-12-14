@@ -1,12 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import toast from 'react-hot-toast'
 import { Loader, User, Mail, Lock } from 'lucide-react'
-import { useContext } from 'react'
+
 import { AppContext } from '../context/AppContext'
 import Navbar from './Navbar'
-import toast from 'react-hot-toast'
-import { useEffect } from 'react'
 
 const Login = () => {
     axios.defaults.withCredentials = true
@@ -14,7 +13,9 @@ const Login = () => {
     const navigate = useNavigate()
     const {backendUrl, isLoggedIn, setIsLoggedIn, getUserData, loading} = useContext(AppContext)
 
-    const [state, setState] = useState('Login')
+    const [state, setState] = useState(() => {
+        return localStorage.getItem('authMode-state') || 'Login'
+    })
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -22,7 +23,7 @@ const Login = () => {
     const onSubmitHandler = async (e) => {
         try {
             e.preventDefault()
-            const {data} = await axios.post(`${backendUrl}/api/user/${state.toLocaleLowerCase()}`, {name, email, password})
+            const {data} = await axios.post(`${backendUrl}/api/user/${state.toLowerCase()}`, {name, email, password})
             if (data.success) {
                 toast.success(data.message)
                 setIsLoggedIn(true)
@@ -51,6 +52,10 @@ const Login = () => {
         }
         init()
     })
+
+    useEffect(() => {
+        localStorage.setItem('authMode-state', state)
+    }, [state])
 
     return (
         loading
@@ -97,7 +102,7 @@ const Login = () => {
                             {
                                 state === 'Login' && (
                                     <p onClick={() => navigate('/reset-password')} className='px-2.5 py-2.5 text-center'>
-                                        <h6 className='cursor-pointer underline transition-all hover:scale-105 active:scale-95'>Forgot Password?</h6>
+                                        <span className='cursor-pointer underline transition-all hover:scale-105 active:scale-95'>Forgot Password?</span>
                                     </p>
                                 )
                             }
@@ -106,11 +111,11 @@ const Login = () => {
                                 state === 'Login'
                                 ? (
                                     <p className='py-2.5 px-2.5 text-center'>
-                                        Don't have an account? <h6 onClick={() => setState('Register')} className='inline-block cursor-pointer underline transition-all hover:scale-105 active:scale-95'>Register here</h6>
+                                        Don't have an account? <span onClick={() => setState('Register')} className='inline-block cursor-pointer underline transition-all hover:scale-105 active:scale-95'>Register here</span>
                                     </p>
                                 ) : (
                                     <p className='py-2.5 px-2.5 text-center'>
-                                        Already have an account? <h6 onClick={() => setState('Login')} className='inline-block cursor-pointer underline transition-all hover:scale-105 active:scale-95'>Login here</h6>
+                                        Already have an account? <span onClick={() => setState('Login')} className='inline-block cursor-pointer underline transition-all hover:scale-105 active:scale-95'>Login here</span>
                                     </p>
                                 )
                             }
