@@ -38,6 +38,16 @@ export const AppContextProvider = (props) => {
         }
     }
 
+    const resetAllStates = () => {
+        setIsFriendSelected(false)
+        setIsFriendProfileSelected(false)
+        setSelectedFriendId('')
+
+        localStorage.removeItem('isFriendSelected-state')
+        localStorage.removeItem('isFriendProfileSelected-state')
+        localStorage.removeItem('selectedFriendId-state')
+    }
+
     useEffect(() => {
         const init = async () => {
             setAuthLoading(true)
@@ -87,7 +97,8 @@ export const AppContextProvider = (props) => {
         isFriendSelected, setIsFriendSelected,
         isFriendProfileSelected, setIsFriendProfileSelected,
         selectedFriendId, setSelectedFriendId,
-        width, setWidth
+        width, setWidth,
+        resetAllStates
     }
 
     return (

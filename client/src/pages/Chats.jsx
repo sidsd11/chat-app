@@ -8,7 +8,7 @@ import { AppContext } from '../context/AppContext'
 import Friends from '../components/Friends'
 import SingleChat from '../components/SingleChat'
 import UserDetails from '../components/UserDetails'
-import Navbar from './Navbar'
+import Navbar from '../components/Navbar'
 
 const Chats = () => {
     axios.defaults.withCredentials = true
@@ -47,7 +47,7 @@ const Chats = () => {
                     {
                         width >= 1024
                         ? (
-                            <div className='grid grid-cols-[20%_60%_20%] gap-1 w-full h-[60vh]'>
+                            <div className='grid grid-cols-[20%_60%_20%] w-full h-[60vh]'>
                                 <Friends />
                                 <SingleChat />
                                 <UserDetails />

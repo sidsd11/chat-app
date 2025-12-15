@@ -10,7 +10,7 @@ const Friends = () => {
     axios.defaults.withCredentials = true
 
     const navigate = useNavigate()
-    const {backendUrl, isLoggedIn, getUserData, authLoading, setIsFriendSelected, setSelectedFriendId, setIsFriendProfileSelected, selectedFriendId} = useContext(AppContext)
+    const {backendUrl, isLoggedIn, authLoading, setIsFriendSelected, setSelectedFriendId, setIsFriendProfileSelected, selectedFriendId} = useContext(AppContext)
     const [allUsers, setAllUsers] = useState([])
     const [search, setSearch] = useState('')
     const filteredUsers = allUsers.filter(user => (
@@ -32,18 +32,15 @@ const Friends = () => {
     }
 
     useEffect(() => {
-        const init = async () => {
-            try {
-                if (!isLoggedIn && !authLoading) {
-                    navigate('/login')
-                }
-            }
-            catch (error) {
-                toast.error(error.message)
-            }
-            getUserData()
+        if (authLoading) {
+            return
         }
-        init()
+
+        if (!isLoggedIn) {
+            navigate('/login')
+            return
+        }
+
         getAllUsers()
     }, [isLoggedIn, authLoading])
 
@@ -71,7 +68,7 @@ const Friends = () => {
                                 setSelectedFriendId(user._id)
                                 }
                             }}>
-                                <span className='flex-1 min-w-0 break-all whitespace-normal leading-snug'>
+                                <span className={`flex-1 min-w-0 break-all whitespace-normal leading-snug ${!isSelected && 'hover:scale-105 active:scale-95 transition-all'}`}>
                                     {user.name}
                                 </span>
                                 {

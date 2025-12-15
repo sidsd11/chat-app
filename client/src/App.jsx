@@ -4,7 +4,7 @@ import { Toaster } from 'react-hot-toast'
 
 import Chats from './pages/Chats'
 import Login from './pages/Login'
-import Profile from './pages/Profile'
+import MyProfile from './pages/MyProfile'
 
 const App = () => {
     return (
@@ -14,7 +14,7 @@ const App = () => {
                 <Route path='/' element={<Navigate to ='/chats' replace />} />
                 <Route path='/login' element={<Login />} />
                 <Route path='/chats' element={<Chats />} />
-                <Route path='/profile' element={<Profile />} />
+                <Route path='/my-profile' element={<MyProfile />} />
                 <Route path='*' element={<Navigate to='/login' replace />} />
             </Routes>
         </div>

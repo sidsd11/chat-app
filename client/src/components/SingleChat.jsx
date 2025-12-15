@@ -70,14 +70,18 @@ const SingleChat = () => {
 
 
     useEffect(() => {
-        if (authLoading) return
+        if (authLoading) {
+            return
+        }
 
         if (!isLoggedIn) {
             navigate('/login')
             return
         }
 
-        if (!isFriendSelected || !selectedFriendId) return
+        if (!isFriendSelected || !selectedFriendId) {
+            return
+        }
 
         getChats()
         getFriendName()
@@ -92,7 +96,7 @@ const SingleChat = () => {
     return (
         isFriendSelected
         ? (
-            <div className='h-full flex flex-col rounded-lg text-black bg-green-300 overflow-hidden'>
+            <div className='h-full flex flex-col rounded-lg text-black bg-green-300 overflow-hidden mx-1'>
                 <div className='h-[10%] bg-green-500 flex items-center px-4 text-sm font-semibold rounded-t-lg cursor-pointer'>
                     {
                         width < 1024 && (
@@ -111,7 +115,7 @@ const SingleChat = () => {
                     {
                         width >= 1024 && (
                             <CircleX
-                            className='size-4 mr-5 cursor-pointer transition-all hover:scale-105 active:scale-95 z-10'
+                            className='size-5 mr-5 cursor-pointer transition-all hover:scale-105 active:scale-95 z-10'
                             onClick={() => {
                                 setIsFriendSelected(false)
                                 setIsFriendProfileSelected(false)
@@ -159,7 +163,7 @@ const SingleChat = () => {
                 </div>
             </div>
         )  : (
-            <div className='h-full flex items-center justify-center text-black bg-green-300 rounded-lg'>
+            <div className='h-full flex items-center justify-center text-black bg-green-300 rounded-lg mx-1'>
                 Select a friend to start chatting
             </div>
         )
