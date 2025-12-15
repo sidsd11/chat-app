@@ -115,7 +115,7 @@ const SingleChat = () => {
                     {
                         width >= 1024 && (
                             <CircleX
-                            className='size-4 mr-5 cursor-pointer transition-all hover:scale-105 active:scale-95 z-10'
+                            className='size-5 mr-5 cursor-pointer transition-all hover:scale-105 active:scale-95 z-10'
                             onClick={() => {
                                 setIsFriendSelected(false)
                                 setIsFriendProfileSelected(false)
