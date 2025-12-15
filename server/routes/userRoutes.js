@@ -12,4 +12,5 @@ userRouter.get('/is-auth', userAuth, isAuth)
 userRouter.get('/get-user-data', userAuth, getUserData)
 userRouter.get('/get-single-user-data/:id', userAuth, getSingleUserData)
 userRouter.patch('/edit-profile', userAuth, editProfile)
+
 export default userRouter
