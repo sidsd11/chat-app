@@ -31,23 +31,20 @@ const UserDetails = () => {
     }
 
     useEffect(() => {
-        const init = async () => {
-            try {
-                if (!isLoggedIn && !authLoading) {
-                    navigate('/login')
-                }
-                if (isFriendSelected && isFriendProfileSelected) {
-                    getFriendData()
-                }
-                else {
-                    setUserDetails(null)
-                }
-            }
-            catch (error) {
-                toast.error(error.message)
-            }
+        if (authLoading) {
+            return
         }
-        init()
+
+        if (!isLoggedIn) {
+            navigate('/login')
+            return
+        }
+
+        if (!isFriendSelected || !selectedFriendId) {
+            return
+        }
+
+        getFriendData()
     }, [isLoggedIn, authLoading, selectedFriendId, isFriendSelected, isFriendProfileSelected])
 
     return (

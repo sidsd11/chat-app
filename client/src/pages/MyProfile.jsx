@@ -5,9 +5,9 @@ import toast from 'react-hot-toast'
 import { CircleUserRound, Loader, Type } from 'lucide-react'
 
 import { AppContext } from '../context/AppContext'
-import Navbar from './Navbar'
+import Navbar from '../components/Navbar'
 
-const Profile = () => {
+const MyProfile = () => {
     axios.defaults.withCredentials = true
 
     const navigate = useNavigate()
@@ -108,4 +108,4 @@ const Profile = () => {
     )
 }
 
-export default Profile
+export default MyProfile

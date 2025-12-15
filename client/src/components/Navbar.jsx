@@ -13,7 +13,7 @@ const Navbar = () => {
 
     const navigate = useNavigate()
     const currPage = useLocation().pathname
-    const {backendUrl, userData, setUserData, setIsLoggedIn, authLoading} = useContext(AppContext)
+    const {backendUrl, userData, setUserData, setIsLoggedIn, authLoading, resetAllStates} = useContext(AppContext)
 
     /* Logout */
     const logout = async () => {
@@ -24,6 +24,7 @@ const Navbar = () => {
                 setUserData(null)
                 navigate('/')
                 toast.success(data.message)
+                resetAllStates()
             }
             else {
                 toast.error(data.message)
@@ -52,9 +53,9 @@ const Navbar = () => {
                             <div className='absolute hidden group-hover:block top-0 right-0 z-10 rounded pt-10 text-black'>
                                 <ul className='list none m-0 p-2 txt-sm rounded-2xl border border-black bg-linear-to-br from-green-50 to-green-100'>
                                     {
-                                        currPage !== '/profile' &&
-                                        <li onClick={() => navigate('/profile')} className='py-2 px-2 whitespace-nowrap rounded-lg transition-all cursor-pointer hover:bg-green-300 hover:scale-105'>
-                                            Profile
+                                        currPage !== '/my-profile' &&
+                                        <li onClick={() => navigate('/my-profile')} className='py-2 px-2 whitespace-nowrap rounded-lg transition-all cursor-pointer hover:bg-green-300 hover:scale-105'>
+                                            My Profile
                                         </li>
                                     }
                                     {
