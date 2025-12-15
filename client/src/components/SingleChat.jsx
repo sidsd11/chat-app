@@ -93,7 +93,7 @@ const SingleChat = () => {
         isFriendSelected
         ? (
             <div className='h-full flex flex-col rounded-lg text-black bg-green-300 overflow-hidden'>
-                <div className='h-[10%] bg-green-500 flex items-center px-4 text-sm font-semibold rounded-t-lg cursor-pointer hover:scale-101 active:scale-95 transition-all'>
+                <div className='h-[10%] bg-green-500 flex items-center px-4 text-sm font-semibold rounded-t-lg cursor-pointer'>
                     {
                         width < 1024 && (
                             <ArrowLeft
@@ -105,7 +105,7 @@ const SingleChat = () => {
                             }} />
                         )
                     }
-                    <p onClick={() => setIsFriendProfileSelected(true)} className='w-full'>
+                    <p onClick={() => setIsFriendProfileSelected(true)} className='w-full hover:scale-101 active:scale-95 transition-all'>
                         {friendName}
                     </p>
                     {
