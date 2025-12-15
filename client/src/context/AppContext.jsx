@@ -13,9 +13,15 @@ export const AppContextProvider = (props) => {
     const [userData, setUserData] = useState(null)
     const [authLoading, setAuthLoading] = useState(true)
     const [loading, setLoading] = useState(true)
-    const [isFriendSelected, setIsFriendSelected] = useState(false)
-    const [isFriendProfileSelected, setIsFriendProfileSelected] = useState(false)
-    const [selectedFriendId, setSelectedFriendId] = useState('')
+    const [isFriendSelected, setIsFriendSelected] = useState(() => {
+        return localStorage.getItem('isFriendSelected-state') === 'true'
+    })
+    const [isFriendProfileSelected, setIsFriendProfileSelected] = useState(() => {
+        return localStorage.getItem('isFriendProfileSelected-state') === 'true'
+    })
+    const [selectedFriendId, setSelectedFriendId] = useState(() => {
+        return localStorage.getItem('selectedFriendId-state') || ''
+    })
 
     const getUserData = async () => {
         try {
@@ -64,6 +70,12 @@ export const AppContextProvider = (props) => {
         window.addEventListener('resize', handleResize)
         return () => window.removeEventListener('resize', handleResize)
     })
+
+    useEffect(() => {
+        localStorage.setItem('isFriendSelected-state', isFriendSelected.toString())
+        localStorage.setItem('isFriendProfileSelected-state', isFriendProfileSelected.toString())
+        localStorage.setItem('selectedFriendId-state', selectedFriendId)
+    }, [isFriendSelected, isFriendProfileSelected, selectedFriendId])
 
     const value = {
         backendUrl,
