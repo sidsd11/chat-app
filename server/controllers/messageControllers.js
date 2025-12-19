@@ -46,8 +46,16 @@ export const getAllMessages = async (req, res) => {
 
 export const markMessageAsSeen = async (req, res) => {
     try {
-        const id = req.params.id
-        await messageModel.findByIdAndUpdate(id, {seen: true})
+        const senderId = req.params.id
+        const receiverId = req.user.id
+        await messageModel.findByIdAndUpdate(
+            {senderId, receiverId, seen: false},
+            {
+                $set: {
+                    seen: true
+                }
+            }
+        )
         return res.json({success: true, message: 'Message marked as seen'})
     }
     catch (error) {
@@ -74,8 +82,5 @@ export const sendMessage = async (req, res) => {
     }
     catch (error) {
         return res.json({success: false, message: error.message})
-    }
-    finally {
-        console.log(req.body)
     }
 }
