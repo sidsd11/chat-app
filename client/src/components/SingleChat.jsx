@@ -5,13 +5,16 @@ import toast from 'react-hot-toast'
 import { ArrowLeft, CircleX, SendHorizontal } from 'lucide-react'
 
 import { AppContext } from '../context/AppContext'
+import socket from '../connection/socket'
 
 const SingleChat = () => {
     axios.defaults.withCredentials = true
 
     const navigate = useNavigate()
     const {backendUrl, isLoggedIn, authLoading, isFriendSelected, setIsFriendSelected, setIsFriendProfileSelected, selectedFriendId, setSelectedFriendId, userData, width} = useContext(AppContext)
-    const [chats, setChats] = useState([])
+    const roomId = userData?.id && selectedFriendId ? [userData.id, selectedFriendId].sort().join('_') : null
+    const userId = userData?.id
+    const [messages, setMessages] = useState([])
     const [friendName, setFriendName] = useState('')
     const [messageToSend, setMessageToSend] = useState('')
     const [imageToSend, setImageToSend] = useState('')
@@ -21,7 +24,7 @@ const SingleChat = () => {
         try {
             const {data} = await axios.get(`${backendUrl}/api/message/get-all-messages/${selectedFriendId}`)
             if (data.success) {
-                setChats(data.messages)
+                setMessages(data.messages)
             }
             else {
                 toast.error(data.message)
@@ -54,6 +57,19 @@ const SingleChat = () => {
             e.preventDefault()
             const {data} = await axios.post(`${backendUrl}/api/message/send-message/${selectedFriendId}`, {text: messageToSend, image: imageToSend})
             if (data.success) {
+                const msgData = {
+                    _id: Date.now().toString(),
+                    roomId,
+                    senderId: userId,
+                    receiverId: selectedFriendId,
+                    text: messageToSend,
+                    image: imageToSend
+                }
+
+                socket.emit('send_message', msgData)
+
+                setMessages((prev) => [...prev, msgData])
+
                 setMessageToSend('')
                 setImageToSend('')
             }
@@ -85,13 +101,34 @@ const SingleChat = () => {
 
         getChats()
         getFriendName()
-    }, [isLoggedIn, authLoading, selectedFriendId, messageToSend, imageToSend])
+    }, [isLoggedIn, authLoading, selectedFriendId])
 
     useEffect(() => {
         if (chatContainerRef.current) {
-            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight
+            chatContainerRef.current.scrollTo({ top: chatContainerRef.current.scrollHeight, behavior: 'smooth' })
         }
-    }, [chats])
+    }, [messages])
+
+    useEffect(() => {
+        if (!roomId || !userId) return
+
+        socket.emit('join_room', roomId, userId)
+
+        socket.emit('seen_message', {roomId, userId})
+
+        socket.on('receive_message', (data) => {
+            setMessages((prev) => [...prev, data])
+        })
+
+        socket.on('message_marked_as_seen', () => {
+            setMessages(prev => prev.map(msg => msg.senderId === selectedFriendId ? {...msg, seen: true} : msg))
+        })
+
+        return () => {
+            socket.off('receive_message')
+            socket.off('message_marked_as_seen')
+        }
+    }, [roomId, userId])
 
     return (
         isFriendSelected
@@ -127,14 +164,14 @@ const SingleChat = () => {
 
                 <div ref={chatContainerRef} className='h-[80%] overflow-y-auto p-3 space-y-2'>
                     {
-                        chats.length > 0
+                        messages.length > 0
                         ? (
-                            chats.map(chat => {
+                            messages.map(chat => {
                                 const isOwnMessage = chat.senderId === userData.id
                                 return (
-                                    <div
+                                    <div key={chat._id}
                                     className={`flex ${isOwnMessage ? 'justify-end' : 'justify-start'}`}
-                                    key={chat._id}>
+                                    >
                                         <div
                                         className={`max-w-[70%] px-4 py-2 rounded-lg text-sm ${isOwnMessage ? 'bg-green-600 text-white rounded-br-none' : 'bg-white text-black rounded-bl-none'} wrap-break-word whitespace-pre-wrap`}>
                                             {chat.text}
@@ -143,8 +180,10 @@ const SingleChat = () => {
                                 )
                             })
                         ) : (
-                            <div className='h-[80%] flex items-center justify-center text-black'>
-                                No chats to display
+                            <div
+                            key='NA'
+                            className='h-[80%] flex items-center justify-center text-black'>
+                                No messages to display
                             </div>
                         )
                     }

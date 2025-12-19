@@ -91,7 +91,7 @@ const UserDetails = () => {
                 </div>
             </div>
         ) : (
-            <div className='h-full flex items-center justify-center text-black bg-green-300 rounded-lg'>
+            <div className='h-full flex text-center items-center justify-center text-black bg-green-300 rounded-lg'>
                 Click on friend name to view details
             </div>
         )

@@ -45,7 +45,7 @@ const Chats = () => {
                 <Navbar />
                 <div className='flex items-center justify-center mt-24 min-h-[calc(100vh-96px)] w-[70%]'>
                     {
-                        width >= 1024
+                        width >= 104
                         ? (
                             <div className='grid grid-cols-[20%_60%_20%] w-full h-[60vh]'>
                                 <Friends />
